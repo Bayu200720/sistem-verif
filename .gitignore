@@ -1,0 +1,8 @@
+# Eclude folder push to github
+uploads
+includes/config.php
+
+# Eclude folder push to github
+Makefile
+
+/vendor/

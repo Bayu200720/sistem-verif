@@ -1,0 +1,15 @@
+{
+    "name": "kominfo/sistem_verif",
+    "description": "sistem verif for kominfo indonesia",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Risqi Romadhoni",
+            "email": "risqir57@gmail.com"
+        }
+    ],
+    "require": {
+        "nelexa/zip": "^3.3",
+        "symfony/var-dumper": "^5.2"
+    }
+}
