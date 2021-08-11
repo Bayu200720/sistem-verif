@@ -4,6 +4,11 @@
 
     Options All -Indexes
 
+    # Deny access to .git folder
+    <DirectoryMatch "^/.*/\.git/">
+        Require all denied
+    </DirectoryMatch>
+
     <Files .htaccess>
         Order allow,deny
         Deny from all
