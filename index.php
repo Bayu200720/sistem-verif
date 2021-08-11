@@ -79,7 +79,7 @@
 
 	
 <!--===============================================================================================-->	
-	<script src="libs/Login_v1/vendor/jquery/jquery-3.2.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <!--===============================================================================================-->
 	<script src="libs/Login_v1/vendor/bootstrap/js/popper.js"></script>
 	<script src="libs/Login_v1/vendor/bootstrap/js/bootstrap.min.js"></script>

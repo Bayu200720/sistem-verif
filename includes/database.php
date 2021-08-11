@@ -1,9 +1,19 @@
 <?php
 require_once(LIB_PATH_INC.DS."config.php");
 
+/**
+ * @link https://www.php.net/manual/en/mysqli.quickstart.prepared-statements.php
+ */
 class MySqli_DB {
 
+    /**
+     * @var \mysqli $con
+     */
     private $con;
+
+    /**
+     * @var \mysqli_stmt|false $query_id
+     */
     public $query_id;
 
     function __construct() {
@@ -15,17 +25,15 @@ class MySqli_DB {
 /*--------------------------------------------------------------*/
 public function db_connect()
 {
-  $this->con = mysqli_connect(DB_HOST,DB_USER,DB_PASS);
-  if(!$this->con)
-         {
-           die(" Database connection failed:". mysqli_connect_error());
-         } else {
-           $select_db = $this->con->select_db(DB_NAME);
-             if(!$select_db)
-             {
-               die("Failed to Select Database". mysqli_connect_error());
-             }
-         }
+  $this->con = new mysqli(DB_HOST,DB_USER,DB_PASS);
+  if($this->con->connect_error) {
+    die(" Database connection failed:". mysqli_connect_error());
+  }
+  $select_db = $this->con->select_db(DB_NAME);
+  if(!$select_db)
+  {
+    die("Failed to Select Database". mysqli_connect_error());
+  }
 }
 /*--------------------------------------------------------------*/
 /* Function for Close database connection
@@ -46,7 +54,7 @@ public function query($sql)
    {
 
       if (trim($sql != "")) {
-          $this->query_id = $this->con->query($sql);
+          $this->query_id = $this->con->prepare($sql);
       }
       if (!$this->query_id){
 

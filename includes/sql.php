@@ -216,7 +216,7 @@ function find_all_group_by_satker($table,$key,$tahun) {
 /*--------------------------------------------------------------*/
 function find_filed_tabel($database,$tb) {
   global $db;
-  if(tableExists($table))
+  if(tableExists($tb))
   {
     return find_by_sql("SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='{$database}' AND TABLE_NAME='{$tb}'");
   }
@@ -316,14 +316,13 @@ function sumStatus($id)
 function find_DESC($table)
 {
   global $db;
-  $id = (int)$id;
     if(tableExists($table)){
-          $sql = $db->query("SELECT * FROM {$db->escape($table)} ORDER BY id DESC LIMIT 1");
-          if($result = $db->fetch_assoc($sql))
-            return $result;
-          else
-            return null;
-     }
+      $sql = $db->query("SELECT * FROM {$db->escape($table)} ORDER BY id DESC LIMIT 1");
+      if($result = $db->fetch_assoc($sql))
+        return $result;
+      else
+        return null;
+    }
 }
 
 function find_Tpengajuan($id)
@@ -438,10 +437,13 @@ function tableExists($table){
 /*--------------------------------------------------------------*/
   function authenticate($username='', $password='') {
     global $db;
+    $query = "SELECT id,username,password,user_level FROM users WHERE username=? LIMIT 1";
     $username = $db->escape($username);
     $password = $db->escape($password);
-    $sql  = sprintf("SELECT id,username,password,user_level FROM users WHERE username ='%s' LIMIT 1", $username);
-    $result = $db->query($sql);
+    $query_prepare = $db->query($query);
+    $query_prepare->bind_param("s", $username);
+    $query_prepare->execute();
+    $result = $query_prepare->get_result();
     if($db->num_rows($result)){
       $user = $db->fetch_assoc($result);
       $password_request = sha1($password);
@@ -642,19 +644,25 @@ function find_pencairan_tahun($tahun,$id_satker,$panjar){
     global $db;
     //$qty = (int) $qty;
     $id  = (int)$p_id;
-    $sBM ="SELECT sum(qty) as jum from product_in WHERE product_id = '{$id}' GROUP BY product_id";
+    $sBM ="SELECT sum(qty) as jum from product_in WHERE product_id=? GROUP BY product_id";
     $h=$db->query($sBM);
-     $j=$h->fetch_object();
+    $h->bind_param("i", $id);
+    $h->execute();
+    $h_result = $h->get_result();
+    $j=$h_result->fetch_object();
     $jM =$j->jum;
-    $sBK ="SELECT sum(qty) as jum from sales WHERE product_id = '{$id}' GROUP BY product_id";
+    $sBK ="SELECT sum(qty) as jum from sales WHERE product_id=? GROUP BY product_id";
     $hk=$db->query($sBK);
-     $jk=$hk->fetch_object();
-     $jlK =0;
-     if($jk->jum != ''){
-         $jlK =$jk->jum;
-     }else{
-        $jlK=0;
-     }
+    $hk->bind_param("i", $id);
+    $hk->execute();
+    $hk_result = $hk->get_result();
+    $jk=$hk_result->fetch_object();
+    $jlK =0;
+    if($jk->jum != ''){
+        $jlK =$jk->jum;
+    }else{
+      $jlK=0;
+    }
     $stok = $jM-$jlK;
   // return $sBM.'='.$sBK.'='.$stok.'='. $jlK;
     $sql = "UPDATE products SET quantity= '{$stok}' WHERE id = '{$id}'";
